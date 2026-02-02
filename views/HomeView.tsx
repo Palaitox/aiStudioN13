@@ -3,6 +3,7 @@ import { PenTool, Shield, UserCheck, Files, ChevronRight } from 'lucide-react';
 import { Hero } from '../components/organisms/Hero';
 import { LiquidCard } from '../components/LiquidCard';
 import { Button } from '../components/atoms/Button';
+import { InformationCarousel } from '../components/organisms/InformationCarousel';
 import { ViewState } from '../types';
 import { NEWS_DATA } from '../constants';
 
@@ -71,26 +72,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onCategorySelect
         </div>
       </section>
       
-      {/* Information of Interest */}
-      <section className="py-16 bg-slate-900/50 border-y border-white/5">
-        <div className="container mx-auto px-4">
-          <h3 className="text-center text-2xl font-bold text-white mb-10">Información de Interés</h3>
-          <div className="flex flex-wrap justify-center gap-4">
-            {['Niños y Adolescencia', 'Discapacidad', 'Nosotros', 'Normatividad', 'PQRSD', 'Multimedia'].map((item) => (
-              <Button 
-                key={item}
-                variant="outline"
-                onClick={() => {
-                  if(item === 'PQRSD') onNavigate(ViewState.PQRSD);
-                  if(item === 'Nosotros') onNavigate(ViewState.NOSOTROS);
-                }}
-              >
-                {item}
-              </Button>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* New Dynamic Information Section (Organism) */}
+      <InformationCarousel onNavigate={onNavigate} />
     </>
   );
 };

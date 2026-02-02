@@ -1,3 +1,4 @@
+
 export enum ViewState {
   HOME = 'HOME',
   TRAMITES = 'TRAMITES',
@@ -30,6 +31,16 @@ export interface NewsItem {
   summary: string;
   date: string;
   image: string;
+}
+
+export interface InterestItem {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  actionLabel: string;
+  view?: ViewState;
+  category: string;
 }
 
 export enum AccessibilityMode {

@@ -1,4 +1,5 @@
-import { Tramite, NewsItem, ViewState } from './types';
+
+import { Tramite, NewsItem, ViewState, InterestItem } from './types';
 
 export const NOTARIA_INFO = {
   name: "Notaría 13 de Cali",
@@ -268,6 +269,63 @@ export const NEWS_DATA: NewsItem[] = [
     summary: 'Actualización de tarifas y normativas para el año en curso.',
     date: '2026-01-22',
     image: 'https://picsum.photos/800/600?random=3'
+  }
+];
+
+export const INTEREST_DATA: InterestItem[] = [
+  {
+    id: 'int-1',
+    title: 'Niñez y Adolescencia',
+    description: 'Prioridad en trámites, permisos de salida y registro civil. Garantizamos sus derechos.',
+    image: 'https://picsum.photos/600/400?random=10',
+    actionLabel: 'Ver Guía',
+    category: 'Población',
+    view: ViewState.TRANSPARENCIA
+  },
+  {
+    id: 'int-2',
+    title: 'Discapacidad e Inclusión',
+    description: 'Ajustes razonables, interpretación de señas y accesibilidad física en sede.',
+    image: 'https://picsum.photos/600/400?random=11',
+    actionLabel: 'Conocer Servicios',
+    category: 'Accesibilidad',
+    view: ViewState.TRANSPARENCIA
+  },
+  {
+    id: 'int-3',
+    title: 'Nuestra Notaría',
+    description: 'Conozca nuestra misión, visión y el equipo humano detrás de su seguridad jurídica.',
+    image: 'https://picsum.photos/600/400?random=12',
+    actionLabel: 'Quiénes Somos',
+    category: 'Institucional',
+    view: ViewState.NOSOTROS
+  },
+  {
+    id: 'int-4',
+    title: 'Normatividad 2026',
+    description: 'Acceso directo al SUIN y normativas vigentes del sector notarial.',
+    image: 'https://picsum.photos/600/400?random=13',
+    actionLabel: 'Consultar Leyes',
+    category: 'Legal',
+    view: ViewState.TRANSPARENCIA
+  },
+  {
+    id: 'int-5',
+    title: 'PQRSD Digital',
+    description: 'Canal directo para peticiones, quejas, reclamos y sugerencias.',
+    image: 'https://picsum.photos/600/400?random=14',
+    actionLabel: 'Radicar Solicitud',
+    category: 'Servicio',
+    view: ViewState.PQRSD
+  },
+  {
+    id: 'int-6',
+    title: 'Multimedia y Tutoriales',
+    description: 'Aprenda cómo realizar sus trámites con nuestros videos explicativos.',
+    image: 'https://picsum.photos/600/400?random=15',
+    actionLabel: 'Ver Videos',
+    category: 'Educación',
+    view: ViewState.HOME
   }
 ];
 
