@@ -18,7 +18,7 @@ export const AccessibilityTool: React.FC<AccessibilityToolProps> = ({ mode, setM
           
           <button 
             onClick={() => setMode(AccessibilityMode.DEFAULT)}
-            className={`flex items-center gap-2 p-2 rounded-lg text-sm transition-colors ${mode === AccessibilityMode.DEFAULT ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-white/10'}`}
+            className={`flex items-center gap-2 p-2 rounded-lg text-sm transition-colors ${mode === AccessibilityMode.DEFAULT ? 'bg-orange-600 text-white' : 'text-slate-300 hover:bg-white/10'}`}
           >
             <Settings size={16} /> Estándar
           </button>
@@ -32,14 +32,14 @@ export const AccessibilityTool: React.FC<AccessibilityToolProps> = ({ mode, setM
           
           <button 
             onClick={() => setMode(AccessibilityMode.LARGE_TEXT)}
-            className={`flex items-center gap-2 p-2 rounded-lg text-sm transition-colors ${mode === AccessibilityMode.LARGE_TEXT ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-white/10'}`}
+            className={`flex items-center gap-2 p-2 rounded-lg text-sm transition-colors ${mode === AccessibilityMode.LARGE_TEXT ? 'bg-orange-600 text-white' : 'text-slate-300 hover:bg-white/10'}`}
           >
             <ZoomIn size={16} /> Texto Grande
           </button>
 
           <button 
             onClick={() => setMode(AccessibilityMode.DYSLEXIA_FRIENDLY)}
-            className={`flex items-center gap-2 p-2 rounded-lg text-sm transition-colors ${mode === AccessibilityMode.DYSLEXIA_FRIENDLY ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-white/10'}`}
+            className={`flex items-center gap-2 p-2 rounded-lg text-sm transition-colors ${mode === AccessibilityMode.DYSLEXIA_FRIENDLY ? 'bg-orange-600 text-white' : 'text-slate-300 hover:bg-white/10'}`}
           >
             <Type size={16} /> Fuente Legible
           </button>
@@ -48,7 +48,7 @@ export const AccessibilityTool: React.FC<AccessibilityToolProps> = ({ mode, setM
       
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.5)] flex items-center justify-center transition-all hover:scale-110"
+        className="w-14 h-14 rounded-full bg-orange-600 hover:bg-orange-500 text-white shadow-[0_0_20px_rgba(234,88,12,0.5)] flex items-center justify-center transition-all hover:scale-110"
         aria-label="Herramientas de Accesibilidad"
       >
         <Eye size={28} />

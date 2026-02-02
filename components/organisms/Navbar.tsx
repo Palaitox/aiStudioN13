@@ -32,7 +32,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, searchQ
         <div className="flex items-center gap-4 cursor-pointer" onClick={() => handleNav(ViewState.HOME)}>
           <div className="flex gap-2">
              <div className="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center text-[10px] font-bold text-black border-2 border-yellow-300" title="Escudo de Colombia">COL</div>
-             <div className="w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center text-[10px] font-bold text-white border-2 border-blue-400" title="Escudo UCNC">UCNC</div>
+             <div className="w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center text-[10px] font-bold text-white border-2 border-orange-400" title="Escudo UCNC">UCNC</div>
           </div>
           <h1 className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 hidden sm:block">
             {NOTARIA_INFO.name}
@@ -51,7 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, searchQ
             >
               {link.label}
               {currentView === link.view && (
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-brand-secondary shadow-[0_0_10px_rgba(56,189,248,0.5)]" />
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-brand-secondary shadow-[0_0_10px_rgba(251,146,60,0.5)]" />
               )}
             </button>
           ))}

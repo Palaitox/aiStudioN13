@@ -21,13 +21,13 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
       <div className="absolute inset-0 bg-gradient-to-b from-brand-dark/80 via-brand-dark/50 to-brand-dark z-0"></div>
 
       <div className="container mx-auto relative z-10 text-center">
-        <span className="inline-block py-1 px-3 rounded-full bg-blue-500/10 border border-blue-400/30 text-blue-300 text-xs tracking-wider mb-6 animate-pulse-slow font-bold">
+        <span className="inline-block py-1 px-3 rounded-full bg-orange-500/10 border border-orange-400/30 text-orange-300 text-xs tracking-wider mb-6 animate-pulse-slow font-bold">
           SEGURIDAD JURÍDICA Y DIGITAL
         </span>
         
         <h2 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight leading-tight">
           {NOTARIA_INFO.name} <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-secondary to-cyan-200">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-secondary to-amber-200">
             Confianza para el Futuro
           </span>
         </h2>

@@ -76,8 +76,8 @@ function App() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {PARTICIPA_SECTIONS.map((section, idx) => (
           <div key={idx} className="border border-white/10 rounded-xl p-6 hover:bg-white/5 transition-colors cursor-pointer group">
-            <h3 className="text-xl font-bold text-blue-300 mb-2 flex items-center gap-3">
-              <span className="w-8 h-8 rounded-full bg-brand-primary flex items-center justify-center text-sm shadow-lg shadow-blue-900/50">{idx + 1}</span>
+            <h3 className="text-xl font-bold text-orange-300 mb-2 flex items-center gap-3">
+              <span className="w-8 h-8 rounded-full bg-brand-primary flex items-center justify-center text-sm shadow-lg shadow-orange-900/50">{idx + 1}</span>
               <span className="group-hover:text-brand-secondary transition-colors">{section}</span>
             </h3>
             <p className="text-slate-400 text-sm ml-11">Espacio para la vinculación ciudadana y el diálogo constructivo.</p>

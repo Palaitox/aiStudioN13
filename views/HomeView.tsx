@@ -19,7 +19,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onCategorySelect
       className="p-6 group h-full flex flex-col justify-between"
     >
       <div>
-        <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+        <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
           <Icon className="text-brand-secondary" size={24} />
         </div>
         <h3 className="text-xl font-bold text-white mb-2">{title}</h3>

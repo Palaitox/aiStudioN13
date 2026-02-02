@@ -60,7 +60,7 @@ export const SessionGuard: React.FC<{ children: React.ReactNode }> = ({ children
               setIsLocked(false);
               window.location.reload();
             }}
-            className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg w-full transition-colors"
+            className="bg-orange-600 hover:bg-orange-500 text-white px-6 py-3 rounded-lg w-full transition-colors"
           >
             Reactivar Sesión
           </button>
