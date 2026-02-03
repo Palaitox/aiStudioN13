@@ -4,6 +4,7 @@ import { Hero } from '../components/organisms/Hero';
 import { LiquidCard } from '../components/LiquidCard';
 import { Button } from '../components/atoms/Button';
 import { InformationCarousel } from '../components/organisms/InformationCarousel';
+import { ContactSection } from '../components/organisms/ContactSection';
 import { ViewState } from '../types';
 import { NEWS_DATA } from '../constants';
 
@@ -37,7 +38,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onCategorySelect
       <Hero onNavigate={onNavigate} />
       
       {/* Categories Grid (Molecules) */}
-      <div className="container mx-auto px-4 -mt-10 relative z-20">
+      <div className="container mx-auto px-4 -mt-10 relative z-20 mb-24">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <CategoryCard icon={PenTool} title="Escrituración" cat="Escrituración" />
           <CategoryCard icon={Shield} title="Autenticación" cat="Autenticación" />
@@ -46,8 +47,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onCategorySelect
         </div>
       </div>
 
-      {/* News Section (Organism) */}
-      <section className="py-20 container mx-auto px-4">
+      {/* Dynamic Information Section (Organism) */}
+      <InformationCarousel onNavigate={onNavigate} />
+
+      {/* News Section (Organism) - Moved before Contact */}
+      <section className="py-20 container mx-auto px-4 border-t border-white/5">
         <div className="flex justify-between items-end mb-10">
           <div>
             <h3 className="text-brand-secondary font-semibold mb-2 tracking-wider uppercase text-sm">Actualidad</h3>
@@ -71,9 +75,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onCategorySelect
           ))}
         </div>
       </section>
-      
-      {/* New Dynamic Information Section (Organism) */}
-      <InformationCarousel onNavigate={onNavigate} />
+
+      {/* Contact Section (Organism) - Relocated to the bottom */}
+      <ContactSection />
     </>
   );
 };

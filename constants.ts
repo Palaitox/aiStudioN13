@@ -3,8 +3,8 @@ import { Tramite, NewsItem, ViewState, InterestItem } from './types';
 
 export const NOTARIA_INFO = {
   name: "Notaría 13 de Cali",
-  address: "Calle 12 # 34-56, Cali, Valle del Cauca", // Placeholder address
-  phone: "(602) 555-1234",
+  address: "Cl. 5 #50-103, Panamericano, Cali, Valle del Cauca",
+  phone: "(602) 551-8877", // Updated placeholder for Cosmocentro area
   email: "notaria13cali@ucnc.com.co",
   hours: "Lunes a Viernes: 8:00 AM - 5:00 PM | Sábados: 9:00 AM - 12:00 PM"
 };
