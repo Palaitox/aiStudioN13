@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { MapPin, Clock, ChevronRight } from 'lucide-react';
 import { NOTARIA_INFO } from '../../constants';
@@ -80,7 +81,7 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 onClick={() => onNavigate(ViewState.TRAMITES)}
                 icon={<ChevronRight size={20} />}
               >
-                Iniciar Trámite
+                Consultar trámites
               </Button>
               
               <Button 

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Search, Menu, X, ChevronDown } from 'lucide-react';
 import { ViewState, NavItem } from '../../types';
@@ -8,9 +9,10 @@ interface NavbarProps {
   onNavigate: (view: ViewState) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  onSearchSubmit: (query: string) => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, searchQuery, onSearchChange }) => {
+export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, searchQuery, onSearchChange, onSearchSubmit }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
@@ -42,6 +44,12 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, searchQ
       setActiveDropdown(null);
     } else {
       setActiveDropdown(label);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      onSearchSubmit(searchQuery);
     }
   };
 
@@ -107,10 +115,11 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, searchQ
             <Search size={16} className="text-slate-400 mr-2" />
             <input 
               type="text" 
-              placeholder="Buscar trámite..." 
+              placeholder="Preguntar a NotarIA..." 
               className="bg-transparent border-none outline-none text-sm text-white w-full placeholder-slate-500"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
+              onKeyDown={handleKeyDown}
             />
           </div>
 

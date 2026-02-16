@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useRef } from 'react';
 import { ViewState, AccessibilityMode } from './types';
 import { TRANSPARENCY_LINKS, PARTICIPA_SECTIONS } from './constants';
 import { AccessibilityTool } from './components/AccessibilityTool';
@@ -6,8 +7,7 @@ import { SessionGuard } from './components/SessionGuard';
 import { PqrsdForm } from './components/PqrsdForm';
 import { Navbar } from './components/organisms/Navbar';
 import { Footer } from './components/organisms/Footer';
-
-// Views (Templates)
+import { ChatWidget, ChatWidgetHandle } from './components/organisms/ChatWidget'; // Imported ChatWidgetHandle
 import { HomeView } from './views/HomeView';
 import { TramitesView } from './views/TramitesView';
 import { LiquidCard } from './components/LiquidCard';
@@ -19,6 +19,9 @@ function App() {
   const [accessMode, setAccessMode] = useState<AccessibilityMode>(AccessibilityMode.DEFAULT);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTramiteCategory, setSelectedTramiteCategory] = useState<string | 'ALL'>('ALL');
+  
+  // Reference to control the ChatWidget from App/Navbar
+  const chatRef = useRef<ChatWidgetHandle>(null);
 
   // Dynamic Class generation based on Accessibility Mode
   const getAccessClass = () => {
@@ -40,8 +43,20 @@ function App() {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    if (query && currentView !== ViewState.TRAMITES) {
-      setCurrentView(ViewState.TRAMITES);
+    // We maintain this for live filtering in TramitesView if the user is there
+    if (query && currentView === ViewState.TRAMITES) {
+       // Optional: Auto-navigate to Tramites if typing? 
+       // For now, we only filter if already in Tramites to avoid jarring transitions,
+       // as the main intent of the bar is now the Chatbot via Enter.
+    }
+  };
+
+  const handleSearchSubmit = (query: string) => {
+    // Open ChatWidget and send the query
+    if (chatRef.current) {
+      chatRef.current.openWithQuery(query);
+      // Optional: Clear search bar after submitting to chat
+      setSearchQuery(''); 
     }
   };
 
@@ -125,6 +140,7 @@ function App() {
           onNavigate={handleNavigate}
           searchQuery={searchQuery}
           onSearchChange={handleSearch}
+          onSearchSubmit={handleSearchSubmit}
         />
         
         <main className="min-h-screen">
@@ -150,6 +166,9 @@ function App() {
 
         <Footer />
         <AccessibilityTool mode={accessMode} setMode={setAccessMode} />
+        
+        {/* NotarIA Island - Connected via Ref */}
+        <ChatWidget ref={chatRef} />
       </div>
     </SessionGuard>
   );

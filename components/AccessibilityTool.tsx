@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Settings, Eye, Type, ZoomIn, Sun } from 'lucide-react';
 import { AccessibilityMode } from '../types';
@@ -11,7 +12,7 @@ export const AccessibilityTool: React.FC<AccessibilityToolProps> = ({ mode, setM
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="fixed right-4 bottom-4 z-50 flex flex-col items-end gap-2">
+    <div className="fixed right-6 bottom-28 z-40 flex flex-col items-end gap-2">
       {isOpen && (
         <div className="bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-xl p-4 shadow-2xl mb-2 flex flex-col gap-3 min-w-[200px] animate-fade-in-up">
           <h4 className="text-sm font-semibold text-white mb-1 border-b border-white/10 pb-2">Accesibilidad</h4>
@@ -48,7 +49,12 @@ export const AccessibilityTool: React.FC<AccessibilityToolProps> = ({ mode, setM
       
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 rounded-full bg-orange-600 hover:bg-orange-500 text-white shadow-[0_0_20px_rgba(234,88,12,0.5)] flex items-center justify-center transition-all hover:scale-110"
+        className="
+          w-16 h-16 rounded-full 
+          bg-gradient-to-br from-brand-primary to-orange-600 text-white 
+          shadow-[0_0_30px_rgba(234,88,12,0.4)] hover:shadow-[0_0_50px_rgba(234,88,12,0.6)]
+          flex items-center justify-center transition-all duration-300 hover:scale-110
+        "
         aria-label="Herramientas de Accesibilidad"
       >
         <Eye size={28} />
