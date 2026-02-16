@@ -6,7 +6,8 @@ export enum ViewState {
   PARTICIPA = 'PARTICIPA',
   PQRSD = 'PQRSD',
   NOSOTROS = 'NOSOTROS',
-  LEGAL = 'LEGAL'
+  LEGAL = 'LEGAL',
+  CONTACTO = 'CONTACTO'
 }
 
 export interface Tramite {
@@ -21,7 +22,7 @@ export interface Tramite {
 
 export interface NavItem {
   label: string;
-  view: ViewState;
+  view?: ViewState;
   subItems?: { label: string; view: ViewState }[];
 }
 

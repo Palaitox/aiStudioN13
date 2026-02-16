@@ -12,6 +12,7 @@ import { HomeView } from './views/HomeView';
 import { TramitesView } from './views/TramitesView';
 import { LiquidCard } from './components/LiquidCard';
 import { FileText, ExternalLink, Files, UserCheck } from 'lucide-react';
+import { ContactSection } from './components/organisms/ContactSection';
 
 function App() {
   const [currentView, setCurrentView] = useState<ViewState>(ViewState.HOME);
@@ -144,6 +145,7 @@ function App() {
           {currentView === ViewState.PARTICIPA && <ParticipaView />}
           {currentView === ViewState.PQRSD && <div className="pt-32"><PqrsdForm /></div>}
           {currentView === ViewState.NOSOTROS && <NosotrosView />}
+          {currentView === ViewState.CONTACTO && <div className="pt-20"><ContactSection /></div>}
         </main>
 
         <Footer />

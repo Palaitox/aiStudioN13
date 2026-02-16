@@ -17,7 +17,6 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
       {/* 
         LAYER 1: Static Background Image (LCP Candidate)
         Optimization: fetchpriority="high", no lazy loading, dark overlay for contrast.
-        Image chosen: Modern architecture/glass to match 'Liquid Glass' theme.
       */}
       <div className="absolute inset-0 z-0">
         <img 
@@ -29,15 +28,13 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           height="1080"
           decoding="async"
         />
-        {/* Gradient Overlay for Text Contrast (Accessibility) */}
+        {/* Gradient Overlay for Text Contrast */}
         <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/80 to-brand-dark/40" />
         <div className="absolute inset-0 bg-gradient-to-b from-brand-dark/30 via-transparent to-brand-dark" />
       </div>
 
       {/* 
         LAYER 2: CSS-Only Ambient Animation (Liquid Light) 
-        Performance: Uses transform/opacity only. No JS. 
-        Will-change hints for GPU acceleration.
       */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0" aria-hidden="true">
         <div 
@@ -49,7 +46,7 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         />
       </div>
 
-      {/* LAYER 3: Content (Open Editorial Layout) */}
+      {/* LAYER 3: Content (Open Editorial Layout - No Card) */}
       <div className="container mx-auto px-4 relative z-10 mt-10">
         <div className="max-w-5xl mx-auto flex flex-col items-center text-center">
             
@@ -74,7 +71,7 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
               Gestione sus trámites notariales con la rapidez de la tecnología moderna y la solidez de la tradición legal.
             </p>
 
-            {/* Action Islands */}
+            {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row justify-center gap-5 items-center mb-16 w-full sm:w-auto">
               <Button 
                 variant="primary" 
@@ -96,7 +93,7 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
               </Button>
             </div>
 
-            {/* Metadata Footer (Floating Pills) */}
+            {/* Metadata Pills */}
             <div className="flex flex-wrap justify-center gap-4 text-sm text-slate-300 animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-dark/40 border border-white/10 backdrop-blur-md hover:bg-white/5 transition-colors cursor-default">
                 <MapPin size={16} className="text-brand-secondary" />
