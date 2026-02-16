@@ -1,5 +1,7 @@
 {
   "name": "Notaría 13 de Cali - Portal 2026",
   "description": "Plataforma digital moderna, accesible y segura para la Notaría 13 de Cali, diseñada con estándares UX/UI 2026 y cumplimiento legal estricto.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [
+    "microphone"
+  ]
 }

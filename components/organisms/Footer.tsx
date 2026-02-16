@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { NOTARIA_INFO } from '../../constants';
@@ -88,7 +89,7 @@ export const Footer: React.FC = () => {
             © 2026 {NOTARIA_INFO.name}. Vigilado por la Superintendencia de Notariado y Registro.
           </p>
           <div className="text-xs text-slate-500">
-            Desarrollado con <span className="text-brand-secondary font-medium">Atomic Design</span> & <span className="text-brand-secondary font-medium">React 19</span>
+            Desarrollado por <span className="text-brand-secondary font-medium">Rafael y Reinaldo</span>
           </div>
         </div>
       </div>
