@@ -1,26 +1,27 @@
 
 import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
-import { MessageSquare, X, Send, Globe, User, Bot, Trash2, Mic, MicOff, Volume2, Square, Brain } from 'lucide-react';
+import { MessageSquare, X, Send, Globe, User, Bot, Trash2, Mic, MicOff, Volume2, Square, Brain, AlertTriangle, Sparkles } from 'lucide-react';
 import { GoogleGenAI, Modality } from "@google/genai";
 import { NOTARIA_INFO, TRAMITES_DATA } from '../../constants';
 
 // --- Types ---
 interface Message {
   id: string;
-  role: 'user' | 'model';
+  role: 'user' | 'model' | 'system';
   text: string;
   isStreaming?: boolean;
   sources?: { title: string; uri: string }[];
-  isThinking?: boolean; // New visual state for thinking models
+  isThinking?: boolean;
+  isError?: boolean;
 }
 
 export interface ChatWidgetHandle {
   openWithQuery: (query: string) => void;
 }
 
-// --- Quick Suggestions ---
+// --- Quick Suggestions (Updated per user request) ---
 const QUICK_PROMPTS = [
-  "¿Cuáles son las tarifas 2026?",
+  "Consultar tarifas nuevas de trámites 2026",
   "Horarios de atención"
 ];
 
@@ -77,7 +78,7 @@ export const ChatWidget = forwardRef<ChatWidgetHandle, {}>((props, ref) => {
   const [isOpen, setIsOpen] = useState(false);
   
   // AI Configuration State
-  const [isThinkingMode, setIsThinkingMode] = useState(false); // Toggle for Thinking Mode
+  const [isThinkingMode, setIsThinkingMode] = useState(false);
   const [chatSession, setChatSession] = useState<any>(null);
   
   // UI States
@@ -100,27 +101,21 @@ export const ChatWidget = forwardRef<ChatWidgetHandle, {}>((props, ref) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   
-  // Speech Recognition Refs
   const recognitionRef = useRef<any>(null);
   const textBeforeDictation = useRef<string>('');
   const inputStateRef = useRef<string>('');
 
-  // Audio Playback Refs (Gemini TTS)
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioSourceRef = useRef<AudioBufferSourceNode | null>(null);
 
-  // Sync refs
   useEffect(() => {
     inputStateRef.current = input;
-    
-    // Auto-resize logic for the textarea
     if (inputRef.current) {
       inputRef.current.style.height = 'auto';
       inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 180)}px`;
     }
   }, [input]);
 
-  // Expose methods to parent (App.tsx)
   useImperativeHandle(ref, () => ({
     openWithQuery: (query: string) => {
       setIsOpen(true);
@@ -128,25 +123,22 @@ export const ChatWidget = forwardRef<ChatWidgetHandle, {}>((props, ref) => {
     }
   }));
 
-  // --- Scroll to bottom effect ---
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // --- Focus input on open ---
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 300);
     }
   }, [isOpen]);
 
-  // --- AI Initialization (Dependent on Thinking Mode) ---
   useEffect(() => {
     if (isOpen) {
       const initAI = async () => {
         try {
           const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-          const modelName = isThinkingMode ? 'gemini-3-pro-preview' : 'gemini-2.5-flash-latest';
+          const modelName = isThinkingMode ? 'gemini-3-pro-preview' : 'gemini-3-flash-preview';
           
           const chatConfig: any = {
             systemInstruction: SYSTEM_INSTRUCTION,
@@ -167,12 +159,10 @@ export const ChatWidget = forwardRef<ChatWidgetHandle, {}>((props, ref) => {
           console.error("Error initializing NotarIA:", error);
         }
       };
-
       initAI();
     }
   }, [isOpen, isThinkingMode]);
 
-  // --- Auto-send pending prompt ---
   useEffect(() => {
     if (chatSession && pendingPrompt && !isLoading) {
       handleSend(undefined, pendingPrompt);
@@ -180,33 +170,29 @@ export const ChatWidget = forwardRef<ChatWidgetHandle, {}>((props, ref) => {
     }
   }, [chatSession, pendingPrompt, isLoading]);
 
-  // --- Toggle Thinking Mode Handler ---
   const toggleThinkingMode = () => {
     const newMode = !isThinkingMode;
     setIsThinkingMode(newMode);
     setMessages(prev => [...prev, {
         id: `sys-${Date.now()}`,
-        role: 'model',
+        role: 'system',
         text: newMode 
-            ? '**Modo Pensamiento Activado (Gemini 3 Pro):**\nAhora puedo razonar profundamente sobre casos complejos. Las respuestas pueden tardar un poco más.' 
-            : '**Modo Estándar (Gemini Flash):**\nRespuestas rápidas y eficientes para consultas generales.',
+            ? 'Modo Razonamiento Activado. Ideal para casos complejos.' 
+            : 'Modo Estándar Activado. Respuestas rápidas.',
     }]);
   };
 
-  // --- Speech Recognition Logic ---
   const toggleListening = () => {
     if (isListening) {
       recognitionRef.current?.stop();
       setIsListening(false);
       return;
     }
-
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert("Tu navegador no soporta dictado por voz.");
       return;
     }
-
     try {
         const recognition = new SpeechRecognition();
         recognitionRef.current = recognition;
@@ -214,7 +200,6 @@ export const ChatWidget = forwardRef<ChatWidgetHandle, {}>((props, ref) => {
         recognition.continuous = true;
         recognition.interimResults = true;
         textBeforeDictation.current = inputStateRef.current;
-
         recognition.onstart = () => setIsListening(true);
         recognition.onend = () => setIsListening(false);
         recognition.onresult = (event: any) => {
@@ -235,7 +220,6 @@ export const ChatWidget = forwardRef<ChatWidgetHandle, {}>((props, ref) => {
     }
   };
 
-  // --- Text to Speech Logic ---
   const toggleSpeech = async (text: string, messageId: string) => {
     if (speakingMessageId === messageId) {
       if (audioSourceRef.current) {
@@ -245,29 +229,25 @@ export const ChatWidget = forwardRef<ChatWidgetHandle, {}>((props, ref) => {
       setSpeakingMessageId(null);
       return;
     }
-
     if (audioSourceRef.current) {
       audioSourceRef.current.stop();
       audioSourceRef.current = null;
     }
     window.speechSynthesis.cancel();
     setSpeakingMessageId(messageId); 
-
     try {
       if (!audioContextRef.current) {
         audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
       }
       const ctx = audioContextRef.current;
       if (ctx.state === 'suspended') await ctx.resume();
-
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const cleanText = text.replace(/[#*]/g, '').replace(/\[.*?\]/g, ''); 
-
       const response = await ai.models.generateContent({
         model: "gemini-2.5-flash-preview-tts",
         contents: [{ parts: [{ text: cleanText }] }],
         config: {
-          responseModalities: [Modality.AUDIO],
+          responseModalalities: [Modality.AUDIO],
           speechConfig: {
             voiceConfig: {
               prebuiltVoiceConfig: { voiceName: 'Kore' },
@@ -275,10 +255,8 @@ export const ChatWidget = forwardRef<ChatWidgetHandle, {}>((props, ref) => {
           },
         },
       });
-
       const audioData = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
       if (!audioData) throw new Error("No audio generated");
-
       const pcmBytes = base64ToUint8Array(audioData);
       const buffer = createAudioBufferFromPCM(ctx, pcmBytes);
       const source = ctx.createBufferSource();
@@ -330,8 +308,29 @@ export const ChatWidget = forwardRef<ChatWidgetHandle, {}>((props, ref) => {
         ));
       }
       setMessages(prev => prev.map(msg => msg.id === modelMsgId ? { ...msg, isStreaming: false, isThinking: false } : msg));
-    } catch (error) {
-      setIsLoading(false);
+    } catch (error: any) {
+      console.error("Gemini API Error:", error);
+      let errorMsg = "Lo siento, ocurrió un error inesperado al procesar tu solicitud.";
+      
+      if (error.message?.includes('429')) {
+        errorMsg = "He alcanzado mi límite de capacidad momentáneo (Error 429). Por favor, espera 1 o 2 minutos antes de intentarlo de nuevo.";
+      } else if (error.message?.includes('400')) {
+        errorMsg = "Tu consulta no pudo ser procesada por restricciones de seguridad o formato (Error 400). Intenta preguntar de otra forma.";
+      } else if (error.message?.includes('401')) {
+        errorMsg = "Error de autenticación. La llave de acceso no es válida (Error 401).";
+      } else if (error.message?.includes('fetch')) {
+        errorMsg = "Error de conexión. Revisa tu internet e inténtalo de nuevo.";
+      }
+
+      setMessages(prev => {
+        const filtered = prev.filter(m => !m.isStreaming);
+        return [...filtered, { 
+          id: `err-${Date.now()}`, 
+          role: 'model', 
+          text: errorMsg,
+          isError: true 
+        }];
+      });
     } finally {
       setIsLoading(false);
     }
@@ -353,11 +352,8 @@ export const ChatWidget = forwardRef<ChatWidgetHandle, {}>((props, ref) => {
     }
   };
 
-  // --- Robust Markdown Parser ---
   const renderMarkdown = (text: string) => {
     const lines = text.split('\n');
-    
-    // Helper to process inline styles (bold, italic)
     const processInline = (str: string) => {
       const parts = str.split(/(\*\*.*?\*\*|\*.*?\*)/g);
       return parts.map((part, i) => {
@@ -373,19 +369,9 @@ export const ChatWidget = forwardRef<ChatWidgetHandle, {}>((props, ref) => {
 
     return lines.map((line, idx) => {
       const trimmed = line.trim();
-      
-      // Headers
-      if (trimmed.startsWith('### ')) {
-        return <h4 key={idx} className="text-base font-bold text-brand-secondary mt-3 mb-1">{processInline(trimmed.slice(4))}</h4>;
-      }
-      if (trimmed.startsWith('## ')) {
-        return <h3 key={idx} className="text-lg font-bold text-white mt-4 mb-2 border-b border-white/5 pb-1">{processInline(trimmed.slice(3))}</h3>;
-      }
-      if (trimmed.startsWith('# ')) {
-        return <h2 key={idx} className="text-xl font-bold text-brand-secondary mt-5 mb-3">{processInline(trimmed.slice(2))}</h2>;
-      }
-
-      // Lists
+      if (trimmed.startsWith('### ')) return <h4 key={idx} className="text-base font-bold text-brand-secondary mt-3 mb-1">{processInline(trimmed.slice(4))}</h4>;
+      if (trimmed.startsWith('## ')) return <h3 key={idx} className="text-lg font-bold text-white mt-4 mb-2 border-b border-white/5 pb-1">{processInline(trimmed.slice(3))}</h3>;
+      if (trimmed.startsWith('# ')) return <h2 key={idx} className="text-xl font-bold text-brand-secondary mt-5 mb-3">{processInline(trimmed.slice(2))}</h2>;
       if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
         return (
           <div key={idx} className="flex gap-2 ml-2 my-1.5 leading-relaxed">
@@ -394,10 +380,7 @@ export const ChatWidget = forwardRef<ChatWidgetHandle, {}>((props, ref) => {
           </div>
         );
       }
-
-      // Paragraphs (ignoring empty lines for cleaner layout)
       if (trimmed.length === 0) return <div key={idx} className="h-2" />;
-      
       return <p key={idx} className="mb-2.5 leading-relaxed text-slate-200">{processInline(line)}</p>;
     });
   };
@@ -438,22 +421,32 @@ export const ChatWidget = forwardRef<ChatWidgetHandle, {}>((props, ref) => {
           </div>
         </div>
 
-        {/* Messages */}
+        {/* Messages Container */}
         <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 scrollbar-thin">
           {messages.map((msg) => (
-            <div key={msg.id} className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-              <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center shrink-0 mt-1 shadow-lg ${msg.role === 'user' ? 'bg-slate-700' : (isThinkingMode && msg.role === 'model' ? 'bg-purple-900/40 border border-purple-500/30' : 'bg-brand-primary/20')}`}>
-                {msg.role === 'user' ? <User size={16} /> : (isThinkingMode && msg.role === 'model' ? <Brain size={16} className="text-purple-400" /> : <Bot size={16} className="text-brand-secondary" />)}
-              </div>
-              <div className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} max-w-[85%]`}>
-                <div className={`p-4 md:p-5 rounded-3xl text-sm md:text-base shadow-sm relative group/msg ${msg.role === 'user' ? 'bg-slate-800 text-white rounded-tr-none border border-white/5' : 'bg-white/5 text-slate-200 rounded-tl-none border border-white/10 backdrop-blur-md'} ${msg.isThinking ? 'border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.1)]' : ''}`}>
-                  <div>{renderMarkdown(msg.text)}</div>
-                  {msg.role === 'model' && !msg.isStreaming && (
-                    <button onClick={() => toggleSpeech(msg.text, msg.id)} className={`absolute -bottom-8 left-0 p-1.5 rounded-full transition-all duration-300 opacity-0 group-hover/msg:opacity-100 ${speakingMessageId === msg.id ? 'opacity-100 text-brand-secondary bg-brand-primary/10' : 'text-slate-500 hover:text-white'}`}>
-                      {speakingMessageId === msg.id ? <Square size={14} className="animate-pulse" fill="currentColor" /> : <Volume2 size={16} />}
-                    </button>
-                  )}
+            <div key={msg.id} className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : (msg.role === 'system' ? 'justify-center' : '')}`}>
+              {msg.role !== 'system' && (
+                <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center shrink-0 mt-1 shadow-lg ${msg.role === 'user' ? 'bg-slate-700' : (isThinkingMode && msg.role === 'model' ? 'bg-purple-900/40 border border-purple-500/30' : 'bg-brand-primary/20')}`}>
+                  {msg.role === 'user' ? <User size={16} /> : (isThinkingMode && msg.role === 'model' ? <Brain size={16} className="text-purple-400" /> : <Bot size={16} className="text-brand-secondary" />)}
                 </div>
+              )}
+              
+              <div className={`flex flex-col ${msg.role === 'user' ? 'items-end' : (msg.role === 'system' ? 'items-center w-full' : 'items-start')} max-w-[85%]`}>
+                {msg.role === 'system' ? (
+                  <div className="bg-white/5 text-[10px] uppercase tracking-widest text-slate-500 py-1 px-4 rounded-full border border-white/5">
+                    {msg.text}
+                  </div>
+                ) : (
+                  <div className={`p-4 md:p-5 rounded-3xl text-sm md:text-base shadow-sm relative group/msg ${msg.role === 'user' ? 'bg-slate-800 text-white rounded-tr-none border border-white/5' : 'bg-white/5 text-slate-200 rounded-tl-none border border-white/10 backdrop-blur-md'} ${msg.isError ? 'border-orange-500/40 bg-orange-500/5' : ''}`}>
+                    {msg.isError && <div className="flex items-center gap-2 text-orange-400 font-bold mb-2 text-xs"><AlertTriangle size={14} /> ERROR DE SISTEMA</div>}
+                    <div>{renderMarkdown(msg.text)}</div>
+                    {msg.role === 'model' && !msg.isStreaming && !msg.isError && (
+                      <button onClick={() => toggleSpeech(msg.text, msg.id)} className={`absolute -bottom-8 left-0 p-1.5 rounded-full transition-all duration-300 opacity-0 group-hover/msg:opacity-100 ${speakingMessageId === msg.id ? 'opacity-100 text-brand-secondary bg-brand-primary/10' : 'text-slate-500 hover:text-white'}`}>
+                        {speakingMessageId === msg.id ? <Square size={14} className="animate-pulse" fill="currentColor" /> : <Volume2 size={16} />}
+                      </button>
+                    )}
+                  </div>
+                )}
                 {msg.sources && (
                   <div className="flex flex-wrap gap-2 mt-3 animate-fade-in">
                     {msg.sources.map((source, idx) => (
@@ -483,8 +476,25 @@ export const ChatWidget = forwardRef<ChatWidgetHandle, {}>((props, ref) => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input */}
+        {/* Input & Quick Suggestions */}
         <div className="p-4 md:p-6 bg-brand-dark/50 border-t border-white/5 backdrop-blur-xl shrink-0">
+          
+          {/* Quick Suggestions (Restored as per user request) */}
+          {messages.length <= 1 && !isLoading && (
+            <div className="mb-4 flex flex-wrap gap-2 animate-fade-in">
+              {QUICK_PROMPTS.map((prompt, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleSend(undefined, prompt)}
+                  className="flex items-center gap-2 text-xs bg-white/5 hover:bg-white/10 border border-white/10 hover:border-brand-secondary/50 text-slate-300 hover:text-white px-4 py-2.5 rounded-full transition-all backdrop-blur-sm group/btn"
+                >
+                  <Sparkles size={12} className="text-brand-secondary group-hover/btn:scale-110 transition-transform" />
+                  {prompt}
+                </button>
+              ))}
+            </div>
+          )}
+
           <form onSubmit={handleSend} className="relative max-w-4xl mx-auto w-full">
             <textarea
               ref={inputRef}
